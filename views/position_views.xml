@@ -54,5 +54,5 @@
     <!-- Navigation Menus -->
     <menuitem id="menu_position_root" name="Position Sync" sequence="10"/>
     <menuitem id="menu_position_list" name="Positions" parent="menu_position_root" action="action_inventory_position" sequence="10"/>
-    <menuitem id="menu_position_import" name="Import Data" parent="menu_position_root" action="action_position_import_wizard" sequence="20"/>
+    <menuitem id="menu_position_import" name="Import Data" parent="menu_position_root" action="odoo_integration.action_position_import_wizard" sequence="20"/>
 </odoo>
