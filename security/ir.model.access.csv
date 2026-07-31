@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_inventory_position,access.inventory.position,model_inventory_position,base.group_user,1,1,1,1
+access_inventory_position_attribute,access.inventory.position.attribute,model_inventory_position_attribute,base.group_user,1,1,1,1
+access_position_import_wizard,access.position.import.wizard,model_position_import_wizard,base.group_user,1,1,1,1

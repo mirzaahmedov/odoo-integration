@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Positions List View (Changed <tree> to <list>) -->
+    <record id="view_inventory_position_tree" model="ir.ui.view">
+        <field name="name">inventory.position.list</field>
+        <field name="model">inventory.position</field>
+        <field name="arch" type="xml">
+            <list string="Positions" create="false" edit="false">
+                <field name="title"/>
+                <field name="external_id"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Position Form / Detail View -->
+    <record id="view_inventory_position_form" model="ir.ui.view">
+        <field name="name">inventory.position.form</field>
+        <field name="model">inventory.position</field>
+        <field name="arch" type="xml">
+            <form string="Position Detail" create="false" edit="false">
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="title" placeholder="Position Title"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <field name="external_id"/>
+                    </group>
+                    <notebook>
+                        <page string="Aggregated Attributes">
+                            <field name="attribute_ids">
+                                <!-- Nested Attributes List (Changed <tree> to <list>) -->
+                                <list string="Attributes" create="false" edit="false">
+                                    <field name="title"/>
+                                    <field name="attr_type" widget="badge"/>
+                                    <field name="summary_display"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Action to open Position List (Changed 'tree,form' to 'list,form') -->
+    <record id="action_inventory_position" model="ir.actions.act_window">
+        <field name="name">Positions</field>
+        <field name="res_model">inventory.position</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- Navigation Menus -->
+    <menuitem id="menu_position_root" name="Position Sync" sequence="10"/>
+    <menuitem id="menu_position_list" name="Positions" parent="menu_position_root" action="action_inventory_position" sequence="10"/>
+    <menuitem id="menu_position_import" name="Import Data" parent="menu_position_root" action="action_position_import_wizard" sequence="20"/>
+</odoo>

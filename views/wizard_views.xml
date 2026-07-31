@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Import Wizard Form View -->
+    <record id="view_position_import_wizard_form" model="ir.ui.view">
+        <field name="name">position.import.wizard.form</field>
+        <field name="model">position.import.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Import Positions from Course App">
+                <sheet>
+                    <group>
+                        <field name="api_endpoint"/>
+                        <field name="api_token" password="True"/>
+                    </group>
+                </sheet>
+                <footer>
+                    <button string="Import Data" type="object" name="action_import_positions" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- Import Wizard Action -->
+    <record id="action_position_import_wizard" model="ir.actions.act_window">
+        <field name="name">Import Positions</field>
+        <field name="res_model">position.import.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+</odoo>
