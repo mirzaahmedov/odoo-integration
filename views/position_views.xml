@@ -211,7 +211,7 @@
                         </group>
                     </group>
                     <notebook>
-                        <page string="Numeric" attrs="{'invisible': [('attr_type', '!=', 'NUMERIC')]}">
+                        <page string="Numeric" invisible="attr_type != NUMERIC">
                             <group>
                                 <field name="stat_count"/>
                                 <field name="stat_min"/>
@@ -219,21 +219,21 @@
                                 <field name="stat_avg"/>
                             </group>
                         </page>
-                        <page string="Choice" attrs="{'invisible': [('attr_type', '!=', 'CHOICE')]}">
+                        <page string="Choice" invisible="attr_type != CHOICE">
                             <group>
                                 <field name="stat_count"/>
                                 <field name="stat_top_values"/>
                                 <field name="stat_distribution"/>
                             </group>
                         </page>
-                        <page string="Text" attrs="{'invisible': [('attr_type', '!=', 'TEXT')]}">
+                        <page string="Text" invisible="attr_type != TEXT">
                             <group>
                                 <field name="stat_count"/>
                                 <field name="stat_unique_count"/>
                                 <field name="stat_top_values"/>
                             </group>
                         </page>
-                        <page string="Boolean" attrs="{'invisible': [('attr_type', '!=', 'BOOLEAN')]}">
+                        <page string="Boolean" invisible="attr_type != BOOLEAN">
                             <group>
                                 <field name="stat_count"/>
                                 <field name="stat_true_count"/>
@@ -241,14 +241,14 @@
                                 <field name="stat_true_percentage"/>
                             </group>
                         </page>
-                        <page string="Date" attrs="{'invisible': [('attr_type', '!=', 'DATE')]}">
+                        <page string="Date" invisible="attr_type != DATE">
                             <group>
                                 <field name="stat_count"/>
                                 <field name="stat_earliest"/>
                                 <field name="stat_latest"/>
                             </group>
                         </page>
-                        <page string="Date Period" attrs="{'invisible': [('attr_type', '!=', 'DATEPERIOD')]}">
+                        <page string="Date Period" invisible="attr_type != DATEPERIOD">
                             <group>
                                 <field name="stat_count"/>
                                 <field name="stat_earliest_start"/>
@@ -256,7 +256,7 @@
                                 <field name="stat_avg_duration_days"/>
                             </group>
                         </page>
-                        <page string="Markdown" attrs="{'invisible': [('attr_type', '!=', 'MARKDOWN')]}">
+                        <page string="Markdown" invisible="attr_type != MARKDOWN">
                             <group>
                                 <field name="stat_total_entries"/>
                                 <field name="stat_avg_word_count"/>
