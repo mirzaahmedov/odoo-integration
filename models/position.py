@@ -1,4 +1,4 @@
-from odoo import models, fields
+from odoo import models, fields, api
 
 
 class InventoryPosition(models.Model):
@@ -15,6 +15,7 @@ class InventoryPosition(models.Model):
         store=True,
     )
 
+    @api.depends('attribute_ids')
     def _compute_attribute_count(self):
         for position in self:
             position.attribute_count = len(position.attribute_ids)
