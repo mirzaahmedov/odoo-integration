@@ -12,7 +12,7 @@ class InventoryPosition(models.Model):
     attribute_count = fields.Integer(
         string='Attribute Count',
         compute='_compute_attribute_count',
-        store=False,
+        store=True,
     )
 
     def _compute_attribute_count(self):
