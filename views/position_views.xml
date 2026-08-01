@@ -179,7 +179,7 @@
                 <filter name="f_date" string="Date" domain="[('attr_type', '=', 'DATE')]"/>
                 <filter name="f_dateperiod" string="Date Period" domain="[('attr_type', '=', 'DATEPERIOD')]"/>
                 <filter name="f_markdown" string="Markdown" domain="[('attr_type', '=', 'MARKDOWN')]"/>
-                <group expand="0" string="Group By">
+                <group>
                     <filter name="group_type" string="Type" context="{'group_by': 'attr_type'}"/>
                     <filter name="group_position" string="Position" context="{'group_by': 'position_id'}"/>
                 </group>
