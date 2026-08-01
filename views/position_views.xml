@@ -14,7 +14,7 @@
                 <field name="title"/>
                 <field name="external_id"/>
                 <group>
-                    <!-- <filter name="group_create" string="Import Month" context="{'group_by': 'create_date:month'}"/> -->
+                    <filter name="group_create" string="Import Month" context="{'group_by': 'create_date:month'}"/>
                     <filter name="group_attr_count" string="Attribute Count" context="{'group_by': 'attribute_count'}"/>
                 </group>
             </search>
