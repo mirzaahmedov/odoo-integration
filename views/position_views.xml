@@ -1,18 +1,95 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- Positions List View (Changed <tree> to <list>) -->
+
+    <!-- ============================================================ -->
+    <!-- inventory.position                                           -->
+    <!-- ============================================================ -->
+
+    <!-- Search -->
+    <record id="view_inventory_position_search" model="ir.ui.view">
+        <field name="name">inventory.position.search</field>
+        <field name="model">inventory.position</field>
+        <field name="arch" type="xml">
+            <search string="Positions">
+                <field name="title"/>
+                <field name="external_id"/>
+                <group expand="0" string="Group By">
+                    <filter name="group_create" string="Import Month" context="{'group_by': 'create_date:month'}"/>
+                    <filter name="group_attr_count" string="Attribute Count" context="{'group_by': 'attribute_count'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- List -->
     <record id="view_inventory_position_tree" model="ir.ui.view">
         <field name="name">inventory.position.list</field>
         <field name="model">inventory.position</field>
         <field name="arch" type="xml">
             <list string="Positions" create="false" edit="false">
                 <field name="title"/>
-                <field name="external_id"/>
+                <field name="external_id" optional="show"/>
+                <field name="attribute_count" string="Attributes" optional="show"/>
+                <field name="create_date" string="Imported" optional="hide"/>
             </list>
         </field>
     </record>
 
-    <!-- Position Form / Detail View -->
+    <!-- Kanban -->
+    <record id="view_inventory_position_kanban" model="ir.ui.view">
+        <field name="name">inventory.position.kanban</field>
+        <field name="model">inventory.position</field>
+        <field name="arch" type="xml">
+            <kanban string="Positions" create="false" edit="false">
+                <field name="title"/>
+                <field name="external_id"/>
+                <field name="attribute_count"/>
+                <field name="attribute_ids"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_global_click">
+                            <div class="o_kanban_record_top">
+                                <div class="o_kanban_record_title">
+                                    <span t-field="title"/>
+                                </div>
+                                <div class="o_kanban_record_subtitle">
+                                    <span t-field="external_id"/>
+                                </div>
+                            </div>
+                            <div class="o_kanban_record_body">
+                                <t t-if="attribute_ids">
+                                    <t t-foreach="record.attribute_ids.records" t-as="attr">
+                                        <span t-attf-class="badge text-bg-secondary me-1 mb-1">
+                                            <t t-esc="attr.data.title"/>
+                                        </span>
+                                    </t>
+                                </t>
+                            </div>
+                            <div class="o_kanban_record_bottom">
+                                <span class="badge text-bg-primary me-1">
+                                    <t t-esc="attribute_count"/>
+                                </span>
+                                <span class="text-muted">attribute(s)</span>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Graph: imports over time -->
+    <record id="view_inventory_position_graph" model="ir.ui.view">
+        <field name="name">inventory.position.graph</field>
+        <field name="model">inventory.position</field>
+        <field name="arch" type="xml">
+            <graph string="Imported Positions" type="line">
+                <field name="create_date" interval="month" type="row"/>
+            </graph>
+        </field>
+    </record>
+
+    <!-- Form -->
     <record id="view_inventory_position_form" model="ir.ui.view">
         <field name="name">inventory.position.form</field>
         <field name="model">inventory.position</field>
@@ -23,18 +100,31 @@
                         <h1>
                             <field name="title" placeholder="Position Title"/>
                         </h1>
+                        <h3>
+                            <span class="badge text-bg-info me-1"/>
+                            <field name="attribute_count"/> aggregated attribute(s)
+                        </h3>
                     </div>
                     <group>
-                        <field name="external_id"/>
+                        <group>
+                            <field name="external_id"/>
+                        </group>
+                        <group>
+                            <field name="create_date" string="Imported On"/>
+                        </group>
                     </group>
                     <notebook>
                         <page string="Aggregated Attributes">
                             <field name="attribute_ids">
-                                <!-- Nested Attributes List (Changed <tree> to <list>) -->
                                 <list string="Attributes" create="false" edit="false">
                                     <field name="title"/>
                                     <field name="attr_type" widget="badge"/>
-                                    <field name="summary_display"/>
+                                    <field name="summary_display" optional="show"/>
+                                    <field name="stat_count" string="Records" optional="hide"/>
+                                    <field name="stat_avg" string="Avg" optional="hide"/>
+                                    <field name="stat_true_percentage" string="Yes %" optional="hide"/>
+                                    <field name="stat_unique_count" string="Unique" optional="hide"/>
+                                    <field name="stat_avg_duration_days" string="Avg Days" optional="hide"/>
                                 </list>
                             </field>
                         </page>
@@ -44,15 +134,228 @@
         </field>
     </record>
 
-    <!-- Action to open Position List (Changed 'tree,form' to 'list,form') -->
+    <!-- Main Action -->
     <record id="action_inventory_position" model="ir.actions.act_window">
         <field name="name">Positions</field>
         <field name="res_model">inventory.position</field>
-        <field name="view_mode">list,form</field>
+        <field name="view_mode">list,kanban,form,graph</field>
     </record>
 
-    <!-- Navigation Menus -->
+    <!-- ============================================================ -->
+    <!-- inventory.position.attribute (Analytics)                     -->
+    <!-- ============================================================ -->
+
+    <!-- Attribute List -->
+    <record id="view_inventory_position_attribute_list" model="ir.ui.view">
+        <field name="name">inventory.position.attribute.list</field>
+        <field name="model">inventory.position.attribute</field>
+        <field name="arch" type="xml">
+            <list string="Attributes" create="false" edit="false">
+                <field name="title"/>
+                <field name="position_id"/>
+                <field name="attr_type" widget="badge"/>
+                <field name="summary_display" optional="show"/>
+                <field name="stat_count" string="Records" optional="show"/>
+                <field name="stat_avg" string="Avg" optional="hide"/>
+                <field name="stat_true_percentage" string="Yes %" optional="hide"/>
+                <field name="stat_unique_count" string="Unique" optional="hide"/>
+                <field name="stat_avg_duration_days" string="Avg Days" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Attribute Search with per-type filters -->
+    <record id="view_inventory_position_attribute_search" model="ir.ui.view">
+        <field name="name">inventory.position.attribute.search</field>
+        <field name="model">inventory.position.attribute</field>
+        <field name="arch" type="xml">
+            <search string="Attributes">
+                <field name="title"/>
+                <field name="position_id"/>
+                <filter name="f_numeric" string="Numeric" domain="[('attr_type', '=', 'NUMERIC')]"/>
+                <filter name="f_choice" string="Choice" domain="[('attr_type', '=', 'CHOICE')]"/>
+                <filter name="f_boolean" string="Boolean" domain="[('attr_type', '=', 'BOOLEAN')]"/>
+                <filter name="f_text" string="Text" domain="[('attr_type', '=', 'TEXT')]"/>
+                <filter name="f_date" string="Date" domain="[('attr_type', '=', 'DATE')]"/>
+                <filter name="f_dateperiod" string="Date Period" domain="[('attr_type', '=', 'DATEPERIOD')]"/>
+                <filter name="f_markdown" string="Markdown" domain="[('attr_type', '=', 'MARKDOWN')]"/>
+                <group expand="0" string="Group By">
+                    <filter name="group_type" string="Type" context="{'group_by': 'attr_type'}"/>
+                    <filter name="group_position" string="Position" context="{'group_by': 'position_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Attribute Form (read-only detail) -->
+    <record id="view_inventory_position_attribute_form" model="ir.ui.view">
+        <field name="name">inventory.position.attribute.form</field>
+        <field name="model">inventory.position.attribute</field>
+        <field name="arch" type="xml">
+            <form string="Attribute Details" create="false" edit="false">
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="title"/>
+                        </h1>
+                        <h3>
+                            <field name="position_id"/>
+                        </h3>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="attr_type" widget="badge"/>
+                        </group>
+                        <group>
+                            <field name="summary_display"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Numeric" attrs="{'invisible': [('attr_type', '!=', 'NUMERIC')]}">
+                            <group>
+                                <field name="stat_count"/>
+                                <field name="stat_min"/>
+                                <field name="stat_max"/>
+                                <field name="stat_avg"/>
+                            </group>
+                        </page>
+                        <page string="Choice" attrs="{'invisible': [('attr_type', '!=', 'CHOICE')]}">
+                            <group>
+                                <field name="stat_count"/>
+                                <field name="stat_top_values"/>
+                                <field name="stat_distribution"/>
+                            </group>
+                        </page>
+                        <page string="Text" attrs="{'invisible': [('attr_type', '!=', 'TEXT')]}">
+                            <group>
+                                <field name="stat_count"/>
+                                <field name="stat_unique_count"/>
+                                <field name="stat_top_values"/>
+                            </group>
+                        </page>
+                        <page string="Boolean" attrs="{'invisible': [('attr_type', '!=', 'BOOLEAN')]}">
+                            <group>
+                                <field name="stat_count"/>
+                                <field name="stat_true_count"/>
+                                <field name="stat_false_count"/>
+                                <field name="stat_true_percentage"/>
+                            </group>
+                        </page>
+                        <page string="Date" attrs="{'invisible': [('attr_type', '!=', 'DATE')]}">
+                            <group>
+                                <field name="stat_count"/>
+                                <field name="stat_earliest"/>
+                                <field name="stat_latest"/>
+                            </group>
+                        </page>
+                        <page string="Date Period" attrs="{'invisible': [('attr_type', '!=', 'DATEPERIOD')]}">
+                            <group>
+                                <field name="stat_count"/>
+                                <field name="stat_earliest_start"/>
+                                <field name="stat_latest_end"/>
+                                <field name="stat_avg_duration_days"/>
+                            </group>
+                        </page>
+                        <page string="Markdown" attrs="{'invisible': [('attr_type', '!=', 'MARKDOWN')]}">
+                            <group>
+                                <field name="stat_total_entries"/>
+                                <field name="stat_avg_word_count"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Graph: attributes by type (pie / donut) -->
+    <record id="view_inventory_position_attribute_graph_type" model="ir.ui.view">
+        <field name="name">inventory.position.attribute.graph.type</field>
+        <field name="model">inventory.position.attribute</field>
+        <field name="arch" type="xml">
+            <graph string="Attributes by Type" type="pie" disable_linking="1">
+                <field name="attr_type" type="row"/>
+            </graph>
+        </field>
+    </record>
+
+    <!-- Graph: numeric min / avg / max per attribute -->
+    <record id="view_inventory_position_attribute_graph_numeric" model="ir.ui.view">
+        <field name="name">inventory.position.attribute.graph.numeric</field>
+        <field name="model">inventory.position.attribute</field>
+        <field name="arch" type="xml">
+            <graph string="Numeric Attributes (Min / Avg / Max)" type="bar">
+                <field name="title" type="row"/>
+                <field name="stat_min" type="measure" string="Min"/>
+                <field name="stat_avg" type="measure" string="Avg"/>
+                <field name="stat_max" type="measure" string="Max"/>
+            </graph>
+        </field>
+    </record>
+
+    <!-- Graph: boolean true / false per attribute -->
+    <record id="view_inventory_position_attribute_graph_boolean" model="ir.ui.view">
+        <field name="name">inventory.position.attribute.graph.boolean</field>
+        <field name="model">inventory.position.attribute</field>
+        <field name="arch" type="xml">
+            <graph string="Boolean Attributes (True / False)" type="bar">
+                <field name="title" type="row"/>
+                <field name="stat_true_count" type="measure" string="True"/>
+                <field name="stat_false_count" type="measure" string="False"/>
+            </graph>
+        </field>
+    </record>
+
+    <!-- Pivot -->
+    <record id="view_inventory_position_attribute_pivot" model="ir.ui.view">
+        <field name="name">inventory.position.attribute.pivot</field>
+        <field name="model">inventory.position.attribute</field>
+        <field name="arch" type="xml">
+            <pivot string="Attribute Analytics">
+                <field name="attr_type" type="row"/>
+                <field name="position_id" type="col"/>
+                <field name="stat_count" type="measure"/>
+                <field name="stat_avg" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <!-- Analytics Actions -->
+    <record id="action_attribute_analytics" model="ir.actions.act_window">
+        <field name="name">Attributes by Type</field>
+        <field name="res_model">inventory.position.attribute</field>
+        <field name="view_mode">graph,list,pivot</field>
+        <field name="view_id" ref="view_inventory_position_attribute_graph_type"/>
+        <field name="search_view_id" ref="view_inventory_position_attribute_search"/>
+    </record>
+
+    <record id="action_attribute_numeric" model="ir.actions.act_window">
+        <field name="name">Numeric Analysis</field>
+        <field name="res_model">inventory.position.attribute</field>
+        <field name="view_mode">graph,list,pivot</field>
+        <field name="view_id" ref="view_inventory_position_attribute_graph_numeric"/>
+        <field name="search_view_id" ref="view_inventory_position_attribute_search"/>
+        <field name="domain">[('attr_type', '=', 'NUMERIC')]</field>
+    </record>
+
+    <record id="action_attribute_boolean" model="ir.actions.act_window">
+        <field name="name">Boolean Analysis</field>
+        <field name="res_model">inventory.position.attribute</field>
+        <field name="view_mode">graph,list,pivot</field>
+        <field name="view_id" ref="view_inventory_position_attribute_graph_boolean"/>
+        <field name="search_view_id" ref="view_inventory_position_attribute_search"/>
+        <field name="domain">[('attr_type', '=', 'BOOLEAN')]</field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- Navigation Menus                                             -->
+    <!-- ============================================================ -->
     <menuitem id="menu_position_root" name="Position Sync" sequence="10"/>
     <menuitem id="menu_position_list" name="Positions" parent="menu_position_root" action="action_inventory_position" sequence="10"/>
     <menuitem id="menu_position_import" name="Import Data" parent="menu_position_root" action="odoo_integration.action_position_import_wizard" sequence="20"/>
+    <menuitem id="menu_position_analytics" name="Analytics" parent="menu_position_root" sequence="30"/>
+    <menuitem id="menu_attribute_type" name="Attributes by Type" parent="menu_position_analytics" action="action_attribute_analytics" sequence="10"/>
+    <menuitem id="menu_attribute_numeric" name="Numeric Analysis" parent="menu_position_analytics" action="action_attribute_numeric" sequence="20"/>
+    <menuitem id="menu_attribute_boolean" name="Boolean Analysis" parent="menu_position_analytics" action="action_attribute_boolean" sequence="30"/>
+
 </odoo>
