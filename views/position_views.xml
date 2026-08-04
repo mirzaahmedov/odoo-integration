@@ -353,9 +353,9 @@
     <menuitem id="menu_position_root" name="Position Sync" sequence="10"/>
     <menuitem id="menu_position_list" name="Positions" parent="menu_position_root" action="action_inventory_position" sequence="10"/>
     <menuitem id="menu_position_import" name="Import Data" parent="menu_position_root" action="odoo_integration.action_position_import_wizard" sequence="20"/>
-    <menuitem id="menu_position_analytics" name="Analytics" parent="menu_position_root" sequence="30"/>
+    <!-- <menuitem id="menu_position_analytics" name="Analytics" parent="menu_position_root" sequence="30"/>
     <menuitem id="menu_attribute_type" name="Attributes by Type" parent="menu_position_analytics" action="action_attribute_analytics" sequence="10"/>
     <menuitem id="menu_attribute_numeric" name="Numeric Analysis" parent="menu_position_analytics" action="action_attribute_numeric" sequence="20"/>
-    <menuitem id="menu_attribute_boolean" name="Boolean Analysis" parent="menu_position_analytics" action="action_attribute_boolean" sequence="30"/>
+    <menuitem id="menu_attribute_boolean" name="Boolean Analysis" parent="menu_position_analytics" action="action_attribute_boolean" sequence="30"/> -->
 
 </odoo>
