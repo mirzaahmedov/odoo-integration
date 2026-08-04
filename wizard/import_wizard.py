@@ -9,7 +9,7 @@ class PositionImportWizard(models.TransientModel):
 
     api_endpoint = fields.Char(
         string='API Endpoint',
-        default='http://localhost:5000/integration/aggregate-position/cms4h2ldb0001e4v2jj7x4b75',
+        default='http://localhost:5000/integration/aggregate-position/cmse9nerb0009dcu6t87q9ymh',
         required=True
     )
     api_token = fields.Char(string='API Token', required=True)
